@@ -32,6 +32,16 @@ Use the following AI_SDLC agent entrypoints as the project advances:
 | Phase 6 | Reviewer | `AI_SDLC/framework/agents/reviewer/current.md` |
 | Phase 7 | Analyst | `AI_SDLC/framework/agents/analyst/current.md` |
 
+### Loaded Agent Versions
+
+Step 3 verification completed on 2026-04-02 with the following agent instruction files checked and applied as the current working basis:
+
+- Phase 1 Interviewer: `AI_SDLC/framework/agents/interviewer/current.md` -> `v1.0.md`
+- Phase 2 Strategist: `AI_SDLC/framework/agents/strategist/current.md` -> `v1.0.md`
+- Phase 3 BA Writer: `AI_SDLC/framework/agents/ba-writer/current.md` -> `v1.0.md`
+
+These agent instructions have been used as the reference standard for the current project artifacts before entering Step 4.
+
 ---
 
 ## Project Context
@@ -111,3 +121,4 @@ Phase 3 BA artifacts are in `phase3_ba/`.
 |------|------|------|
 | 2026-04-02 | Phase 0 | Project workspace initialized from AI_SDLC template and base research captured |
 | 2026-04-02 | Phase 3 | Interview, strategy, and BA foundation documented; local git repository initialized |
+| 2026-04-02 | Step 3 | Interviewer, Strategist, and BA Writer current versions verified and loaded as `v1.0` references |
