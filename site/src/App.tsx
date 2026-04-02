@@ -10,6 +10,7 @@ import { newsItemsKo } from "../content/news/ko/items";
 import { newsItemsEn } from "../content/news/en/items";
 import { partnerItemsKo } from "../content/partners/ko/items";
 import { partnerItemsEn } from "../content/partners/en/items";
+import { submitInquiry, submitSponsorship } from "./services";
 import { useState } from "react";
 
 type Locale = "ko" | "en";
@@ -28,8 +29,12 @@ type SponsorshipProject = {
   period: string;
   status: string;
   progress: string;
+  targetAmount: string;
+  achievedAmount: string;
   purpose: string;
   usage: string;
+  image: string;
+  detail: string;
 };
 
 function detectLocale(): Locale {
@@ -178,7 +183,7 @@ function Home({
 }: {
   locale: Locale;
   text: ReturnType<typeof labels>;
-  news: { slug: string; title: string; date: string; summary: string }[];
+  news: { slug: string; title: string; date: string; summary: string; body: string }[];
   partners: { slug: string; name: string; type: string; summary: string }[];
 }) {
   const copy = locale === "ko" ? ko : en;
@@ -238,6 +243,7 @@ function Home({
               <p className="eyebrow">{activity.year}</p>
               <h3>{activity.title}</h3>
               <p>{activity.summary}</p>
+              <p>{activity.detail}</p>
             </article>
           ))}
         </div>
@@ -264,6 +270,7 @@ function Home({
               <p className="eyebrow">{item.date}</p>
               <h3>{item.title}</h3>
               <p>{item.summary}</p>
+              <p>{item.body}</p>
             </article>
           ))}
         </div>
@@ -300,7 +307,7 @@ function NewsPage({
   items,
 }: {
   locale: Locale;
-  items: { slug: string; title: string; date: string; summary: string }[];
+  items: { slug: string; title: string; date: string; summary: string; body: string }[];
 }) {
   return (
     <section className="stack">
@@ -311,6 +318,7 @@ function NewsPage({
             <p className="eyebrow">{item.date}</p>
             <h2>{item.title}</h2>
             <p>{item.summary}</p>
+            <p>{item.body}</p>
           </article>
         ))}
       </div>
@@ -362,14 +370,15 @@ function SponsorshipHub({
         {projects.map((project) => (
           <article className="card" key={project.slug}>
             <p className="eyebrow">
-              {project.status} · {project.progress}
-            </p>
-            <h2>{project.title}</h2>
-            <p>{project.period}</p>
-            <p>{project.purpose}</p>
-            <p>
-              <strong>{locale === "ko" ? "사용처" : "Usage"}</strong>: {project.usage}
-            </p>
+            {project.status} · {project.progress}
+          </p>
+          <h2>{project.title}</h2>
+          <p>{project.period}</p>
+          <p>{project.purpose}</p>
+          <p>{project.detail}</p>
+          <p>
+            <strong>{locale === "ko" ? "사용처" : "Usage"}</strong>: {project.usage}
+          </p>
             <a
               className="primary inline-action"
               href={href(locale, `/sponsorship/projects/${project.slug}`)}
@@ -392,6 +401,7 @@ function SponsorshipProjectPage({
   text: ReturnType<typeof labels>;
   project: SponsorshipProject;
 }) {
+  const copy = locale === "ko" ? ko : en;
   return (
     <section className="stack">
       <a className="back-link" href={href(locale, "/sponsorship")}>
@@ -405,8 +415,15 @@ function SponsorshipProjectPage({
           <h1 className="detail-title">{project.title}</h1>
           <p>{project.period}</p>
           <p>{project.purpose}</p>
+          <p>{project.detail}</p>
           <p>
             <strong>{locale === "ko" ? "후원 사용처" : "Fund Usage"}</strong>: {project.usage}
+          </p>
+          <p>
+            <strong>{locale === "ko" ? "목표 금액" : "Target Amount"}</strong>: {project.targetAmount}
+          </p>
+          <p>
+            <strong>{locale === "ko" ? "달성 금액" : "Achieved Amount"}</strong>: {project.achievedAmount}
           </p>
         </article>
         <article className="card">
@@ -438,6 +455,20 @@ function SponsorshipProjectPage({
                 ? "입금자명과 신청 정보는 이후 수동 검증됩니다."
                 : "The transfer name and submitted information will be verified later.",
             ]}
+            accountGuide={copy.bankInfo || "To be confirmed"}
+            onSubmit={() =>
+              submitSponsorship({
+                sponsorshipType: "project",
+                projectSlug: project.slug,
+                donorType: "individual",
+                name: "demo",
+                affiliation: "demo",
+                email: "demo@example.com",
+                phone: "010-0000-0000",
+                receiptRequested: "yes",
+                amount: "100000",
+              })
+            }
           />
         </article>
       </div>
@@ -473,6 +504,7 @@ function OneTimeSupportPage({
   locale: Locale;
   text: ReturnType<typeof labels>;
 }) {
+  const copy = locale === "ko" ? ko : en;
   return (
     <section className="stack">
       <a className="back-link" href={href(locale, "/sponsorship")}>
@@ -517,6 +549,19 @@ function OneTimeSupportPage({
                 ? "입금 안내를 확인한 뒤 지정 계좌로 입금하실 수 있습니다."
                 : "You can review the transfer guide and proceed with the designated account.",
             ]}
+            accountGuide={copy.bankInfo || "To be confirmed"}
+            onSubmit={() =>
+              submitSponsorship({
+                sponsorshipType: "one-time",
+                donorType: "individual",
+                name: "demo",
+                affiliation: "demo",
+                email: "demo@example.com",
+                phone: "010-0000-0000",
+                receiptRequested: "yes",
+                amount: "100000",
+              })
+            }
           />
         </article>
       </div>
@@ -567,6 +612,17 @@ function Contact({
                 ? "현재는 데모 상태이며, 추후 실제 이메일 발송과 연결됩니다."
                 : "This is a demo state for now and will later connect to real email delivery.",
             ]}
+            accountGuide={copy.contactEmail || "To be confirmed"}
+            onSubmit={() =>
+              submitInquiry({
+                name: "demo",
+                affiliation: "demo",
+                email: "demo@example.com",
+                phone: "010-0000-0000",
+                subject: "demo",
+                message: "demo",
+              })
+            }
           />
         </article>
       </div>
@@ -597,12 +653,16 @@ function FormLayout({
   helperText,
   completionTitle,
   completionLines,
+  accountGuide,
+  onSubmit,
 }: {
   fields: string[];
   buttonLabel: string;
   helperText?: string;
   completionTitle: string;
   completionLines: string[];
+  accountGuide: string;
+  onSubmit: () => Promise<{ ok: boolean }>;
 }) {
   const [submitted, setSubmitted] = useState(false);
 
@@ -617,7 +677,7 @@ function FormLayout({
         </ul>
         <div className="account-box">
           <strong>KBFA Account Guide</strong>
-          <span>Bank account details will be finalized from approved settings.</span>
+          <span>{accountGuide}</span>
         </div>
         <button type="button" className="primary wide-button" onClick={() => setSubmitted(false)}>
           Edit Again
@@ -635,7 +695,14 @@ function FormLayout({
         </label>
       ))}
       {helperText ? <p className="helper-text">{helperText}</p> : null}
-      <button type="button" className="primary wide-button" onClick={() => setSubmitted(true)}>
+      <button
+        type="button"
+        className="primary wide-button"
+        onClick={async () => {
+          await onSubmit();
+          setSubmitted(true);
+        }}
+      >
         {buttonLabel}
       </button>
     </div>
