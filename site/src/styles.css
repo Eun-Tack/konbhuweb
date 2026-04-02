@@ -171,6 +171,50 @@ li {
   margin-top: 44px;
 }
 
+.inline-action {
+  margin-top: 14px;
+}
+
+.back-link {
+  font-size: 14px;
+  color: var(--blue);
+}
+
+.detail-title {
+  font-size: clamp(28px, 4vw, 48px);
+  margin: 0 0 12px;
+}
+
+.form-layout {
+  display: grid;
+  gap: 12px;
+}
+
+.form-field {
+  display: grid;
+  gap: 6px;
+}
+
+.form-field span {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.form-field input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: white;
+  font: inherit;
+}
+
+.wide-button {
+  width: 100%;
+  border: 0;
+  cursor: pointer;
+}
+
 ul {
   margin: 0;
   padding-left: 18px;
