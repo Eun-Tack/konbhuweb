@@ -222,6 +222,20 @@ li {
   color: var(--muted);
 }
 
+.completion-card {
+  display: grid;
+  gap: 14px;
+}
+
+.account-box {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px dashed var(--gold);
+  background: rgba(176, 139, 66, 0.08);
+}
+
 ul {
   margin: 0;
   padding-left: 18px;

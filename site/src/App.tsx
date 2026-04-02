@@ -10,6 +10,7 @@ import { newsItemsKo } from "../content/news/ko/items";
 import { newsItemsEn } from "../content/news/en/items";
 import { partnerItemsKo } from "../content/partners/ko/items";
 import { partnerItemsEn } from "../content/partners/en/items";
+import { useState } from "react";
 
 type Locale = "ko" | "en";
 type Page =
@@ -426,6 +427,17 @@ function SponsorshipProjectPage({
                 ? "실제 입금과 신청 정보는 이후 이름과 금액 기준으로 검증됩니다."
                 : "The submitted intent will later be verified against the actual transfer name and amount."
             }
+            completionTitle={
+              locale === "ko" ? "후원 신청이 접수되었습니다." : "Your sponsorship intent has been received."
+            }
+            completionLines={[
+              locale === "ko"
+                ? "입금 안내가 화면과 이메일로 함께 제공됩니다."
+                : "Transfer guidance is provided on-screen and by email.",
+              locale === "ko"
+                ? "입금자명과 신청 정보는 이후 수동 검증됩니다."
+                : "The transfer name and submitted information will be verified later.",
+            ]}
           />
         </article>
       </div>
@@ -497,6 +509,14 @@ function OneTimeSupportPage({
                 ? "일시 후원은 협회 운영 전반을 지원하는 흐름으로 유지됩니다."
                 : "One-time support is intended for general KBFA operations and activities."
             }
+            completionTitle={
+              locale === "ko" ? "일시 후원 신청이 접수되었습니다." : "Your one-time support intent has been received."
+            }
+            completionLines={[
+              locale === "ko"
+                ? "입금 안내를 확인한 뒤 지정 계좌로 입금하실 수 있습니다."
+                : "You can review the transfer guide and proceed with the designated account.",
+            ]}
           />
         </article>
       </div>
@@ -539,6 +559,14 @@ function Contact({
                 ? "문의 폼은 추후 실제 이메일 발송 서비스와 연결됩니다."
                 : "This inquiry form will be connected to a real email delivery service later."
             }
+            completionTitle={
+              locale === "ko" ? "문의가 접수되었습니다." : "Your inquiry has been received."
+            }
+            completionLines={[
+              locale === "ko"
+                ? "현재는 데모 상태이며, 추후 실제 이메일 발송과 연결됩니다."
+                : "This is a demo state for now and will later connect to real email delivery.",
+            ]}
           />
         </article>
       </div>
@@ -567,11 +595,37 @@ function FormLayout({
   fields,
   buttonLabel,
   helperText,
+  completionTitle,
+  completionLines,
 }: {
   fields: string[];
   buttonLabel: string;
   helperText?: string;
+  completionTitle: string;
+  completionLines: string[];
 }) {
+  const [submitted, setSubmitted] = useState(false);
+
+  if (submitted) {
+    return (
+      <div className="completion-card">
+        <p className="eyebrow">{completionTitle}</p>
+        <ul>
+          {completionLines.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+        <div className="account-box">
+          <strong>KBFA Account Guide</strong>
+          <span>Bank account details will be finalized from approved settings.</span>
+        </div>
+        <button type="button" className="primary wide-button" onClick={() => setSubmitted(false)}>
+          Edit Again
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="form-layout">
       {fields.map((field) => (
@@ -581,7 +635,7 @@ function FormLayout({
         </label>
       ))}
       {helperText ? <p className="helper-text">{helperText}</p> : null}
-      <button type="button" className="primary wide-button">
+      <button type="button" className="primary wide-button" onClick={() => setSubmitted(true)}>
         {buttonLabel}
       </button>
     </div>
